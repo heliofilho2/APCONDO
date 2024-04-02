@@ -27,32 +27,36 @@ from tkinter import messagebox
 
 
 
-def iniciar_processamento(nomes_moradores, abrir_forms_e_preencher):
+def iniciar_processamento(nomes_moradores, abrir_forms_e_preencher, com_camera=True):
+    if com_camera:
+        camera = cv2.VideoCapture(0)
 
-    camera = cv2.VideoCapture(0)
+        while True:
+            validacao, frame = camera.read()
 
-    while True:
-        validacao, frame = camera.read()
+            if not validacao:
+                print("Erro ao capturar o próximo frame.")
+                break
 
-        if not validacao:
-            print("Erro ao capturar o próximo frame.")
-            break
+            cv2.imshow("Video", frame)
 
-        cv2.imshow("Video", frame)
+            preprocessed_frame = preprocessar_imagem(frame)
+            texto_extraido = pytesseract.image_to_string(preprocessed_frame)
 
-        preprocessed_frame = preprocessar_imagem(frame)
-        texto_extraido = pytesseract.image_to_string(preprocessed_frame)
+            for nome, info in nomes_moradores.items():
+                if nome in texto_extraido.lower():
+                    abrir_forms_e_preencher(nome, info)
+                    registrar_entrega(nome_planilha_entrega, nome, datetime.now().strftime('%Y-%m-%d'), datetime.now().strftime('%H:%M:%S'))  # Chamada para registrar a entrega
+            key = cv2.waitKey(1)
+            if key == 27:
+                break
 
-        for nome, info in nomes_moradores.items():
-            if nome in texto_extraido.lower():
-                abrir_forms_e_preencher(nome, info)
-
-        key = cv2.waitKey(1)
-        if key == 27:
-            break
-
-    camera.release()
-    cv2.destroyAllWindows()
+        camera.release()
+        cv2.destroyAllWindows()
+    else:
+        # Se não estiver usando a câmera, abre o registro manual
+        from interface import criar_janela_registro_manual
+        criar_janela_registro_manual(abrir_forms_e_preencher)
 
 
 def preprocessar_imagem(imagem):

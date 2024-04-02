@@ -35,7 +35,7 @@ def abrir_forms_e_preencher(nome, info):
     elemento_apartamento.send_keys(info["apartamento"])
     elemento_bloco.send_keys(info["bloco"])
 
-    time.sleep(2)
-    driver.find_element(By.XPATH, '//*[@id="mG61Hd"]/div[2]/div/div[3]/div[1]/div[1]/div/span').click()
+    #time.sleep(2)
+   # driver.find_element(By.XPATH, '//*[@id="mG61Hd"]/div[2]/div/div[3]/div[1]/div[1]/div/span').click()
 
     driver.quit()  

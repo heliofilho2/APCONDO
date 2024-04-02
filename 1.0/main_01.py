@@ -17,19 +17,15 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.chrome.service import Service
 
-from interface import criar_interface, criar_janela_registro_manual
+from interface import criar_interface
 from processamento import iniciar_processamento
 from forms import abrir_forms_e_preencher
 import openpyxl
 from datetime import datetime
 
-# main.py
-def iniciar_programa(com_camera=True):  # Adicione com_camera como parâmetro padrão
-    if com_camera:
-        iniciar_processamento(nomes_moradores, abrir_forms_e_preencher)
-    else:
-        criar_janela_registro_manual(nomes_moradores)  # Chama a função para criar a janela de registro manual
-    
+def iniciar_programa():
+    #root.destroy()  # Fecha a janela inicial
+    iniciar_processamento(nomes_moradores, abrir_forms_e_preencher)
 
 
 def criar_planilha_entrega(nome_planilha):
@@ -77,23 +73,17 @@ def compactar_planilhas_mes_anterior():
         for arquivo in arquivos_xlsx:
             os.remove(arquivo)
         os.rmdir(pasta_mes_anterior)
- 
+
 planilha_moradores = openpyxl.load_workbook('PLANILHA.xlsx')
 folha_moradores = planilha_moradores.active
 
-# Excluindo a primeira linha (cabeçalho)
-dados_moradores = list(folha_moradores.values)[1:]
-
 nomes_moradores = {}
-for linha in dados_moradores:
-    nome = linha[0].strip().lower()  # Remover espaços em branco extras e converter para minúsculas
-    if nome not in nomes_moradores:
-        nomes_moradores[nome] = {"apartamento": linha[1], "bloco": linha[2]}
-
-#print("Nomes na planilha:")
-print(nomes_moradores)
+for linha in folha_moradores.iter_rows(values_only=True):
+    nome = linha[0].lower()
+    nomes_moradores[nome] = {"apartamento": linha[1], "bloco": linha[2]}
 
 nome_planilha_entrega = f"Entregas_{datetime.now().strftime('%Y-%m-%d')}.xlsx"
 criar_planilha_entrega(nome_planilha_entrega)
 
-criar_interface(iniciar_programa, nomes_moradores)
+criar_interface(iniciar_programa)
+#cocolascado
