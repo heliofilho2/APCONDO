@@ -1,18 +1,15 @@
 import os
-import glob
-import zipfile
 import cv2
 import pytesseract
 import openpyxl
 import time
 from datetime import datetime
 import tkinter as tk
-
-from winotify import Notification, audio
+from winotify import Notification
 from selenium import webdriver 
 from selenium.webdriver.common.by import By
-from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.chrome.service import Service
+from tkinter import messagebox
 
 
 # Função para criar uma nova planilha Excel com as informações da entrega
@@ -22,6 +19,7 @@ def criar_planilha_entrega(nome_planilha):
         folha = planilha.active
         folha.append(["N° Entrega", "Nome", "Data", "Horário"])
         planilha.save(nome_planilha)
+
 
 # Função para registrar uma entrega na planilha Excel
 def registrar_entrega(nome_planilha, nome, data, horario):
@@ -46,6 +44,7 @@ def exibir_notificacao_sucesso(nome_pessoa):
     Notification(title, message).show()
     time.sleep(5)  # Aguarde 5 segundos para a notificação ser exibida
 
+
 # Função para realizar a segunda validação do apartamento caso haja nomes iguais na planilha
 def validar_apartamento(nome, info_moradores, texto_extraido):
     apartamento = None
@@ -66,6 +65,7 @@ def validar_apartamento(nome, info_moradores, texto_extraido):
             else:
                 return apartamento
     return apartamento
+
 
 # Função para criar e exibir a interface gráfica
 def exibir_interface_grafica():
@@ -107,6 +107,7 @@ def exibir_interface_grafica():
     button_registrar.grid(row=2, column=0, columnspan=2, padx=10, pady=10)
 
     root.mainloop()
+
 
 # Carregar a planilha do Excel com os nomes dos moradores
 planilha_moradores = openpyxl.load_workbook('PLANILHA.xlsx')
