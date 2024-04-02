@@ -86,3 +86,4 @@ nome_planilha_entrega = f"Entregas_{datetime.now().strftime('%Y-%m-%d')}.xlsx"
 criar_planilha_entrega(nome_planilha_entrega)
 
 criar_interface(iniciar_programa)
+#cocolascado
